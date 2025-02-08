@@ -14,16 +14,16 @@ public class Album
         ImageUrl = imageUrl;
     }
 
-    public int Id { get; set; }
+    public int Id { get; private set; }
 
-    public int ArtistId { get; set; }
+    public int ArtistId { get; private set; }
 
     [MaxLength(100)]
-    public string Title { get; set; } = null!;
+    public string Title { get; private set; } = null!;
 
-    public DateTime ReleaseDate { get; set; } = DateTime.Now;
+    public DateTime ReleaseDate { get; private set; } = DateTime.Now;
 
-    public string ImageUrl { get; set; } = null!;
+    public string ImageUrl { get; private set; } = null!;
 
     public static (Album album, ICollection<string> errors) Create(
         int id,
@@ -49,7 +49,7 @@ public class Album
             errors.Add("Title Must Be At Least 5 symbols.");
         }
 
-        Album album = new Album(id, artistId, title);
+        Album album = new Album(id, artistId, title, imageUrl);
 
         return (album, errors);
     }

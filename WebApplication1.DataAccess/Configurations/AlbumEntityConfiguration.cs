@@ -12,6 +12,6 @@ public class AlbumEntityConfiguration : IEntityTypeConfiguration<AlbumEntity>
         builder.Property(x => x.Title);
         builder.HasIndex(x => x.Title).IsUnique(true);
         builder.Property(x => x.ReleaseDate);
-        builder.Property(x => x.);
+        builder.Property(x => x.ImageUrl);
     }
 }

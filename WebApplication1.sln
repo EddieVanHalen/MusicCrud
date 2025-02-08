@@ -1,5 +1,6 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
+# 
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WebApplication1", "WebApplication1\WebApplication1.csproj", "{76EEC1D0-746C-4A12-BE40-C1817B01C7DB}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{9E593FD4-5173-4439-8FDC-4FFE60F7B00D}"
@@ -8,6 +9,8 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution 
 	EndProjectSection
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WebApplication1.DataAccess", "WebApplication1.DataAccess\WebApplication1.DataAccess.csproj", "{9A36126C-46F8-4645-B35E-8786550098C2}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WebApplication1.Models", "WebApplication1.Models\WebApplication1.Models.csproj", "{C86027BE-93A9-47E2-9816-F5D077B0F825}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -23,5 +26,9 @@ Global
 		{9A36126C-46F8-4645-B35E-8786550098C2}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{9A36126C-46F8-4645-B35E-8786550098C2}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{9A36126C-46F8-4645-B35E-8786550098C2}.Release|Any CPU.Build.0 = Release|Any CPU
+		{C86027BE-93A9-47E2-9816-F5D077B0F825}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{C86027BE-93A9-47E2-9816-F5D077B0F825}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{C86027BE-93A9-47E2-9816-F5D077B0F825}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{C86027BE-93A9-47E2-9816-F5D077B0F825}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 EndGlobal

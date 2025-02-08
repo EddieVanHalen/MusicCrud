@@ -1,0 +1,23 @@
+﻿@model Artist;
+
+@{
+    ViewData["Title"] = "Add Artist";
+}
+
+<h1>Add Artist</h1>
+
+<form method="post" asp-controller="Home" asp-action="AddArtistAction">
+    <div class="form-group">
+        <label style="cursor:pointer;" asp-for="Name"></label>
+        <input type="text" class="form-control my-2" asp-for="Name">
+        <span style="color:red" asp-validation-for="Name"></span>
+    </div>
+
+    <button type="submit" class="btn btn-primary">Submit</button>
+</form>
+
+@section Scripts
+{
+    <script src="~/lib/jquery-validation/dist/jquery.validate.min.js"></script>
+    <script src="~/lib/jquery-validation-unobtrusive/jquery.validate.unobtrusive.min.js"></script>
+}

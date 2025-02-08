@@ -14,7 +14,7 @@ public class Artist
 
     public int Id { get; private set; }
 
-    [MaxLength(250)]
+    [MinLength(5), MaxLength(250)]
     public string Name { get; private set; } = null!;
 
     public static (Artist artist, ICollection<string> errors) Create(int id, string name)

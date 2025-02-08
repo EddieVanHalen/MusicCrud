@@ -1,5 +1,7 @@
 using Microsoft.EntityFrameworkCore;
 using WebApplication1.DataAccess;
+using WebApplication1.DataAccess.Repository;
+using WebApplication1.Models.Abstractions.Repository;
 
 WebApplicationBuilder builder = WebApplication.CreateBuilder(args);
 
@@ -11,6 +13,8 @@ builder.Services.AddDbContext<MusicDbContext>(options =>
         .UseNpgsql(builder.Configuration.GetConnectionString(nameof(MusicDbContext)))
         .UseLazyLoadingProxies();
 });
+
+builder.Services.AddScoped<IArtistRepository, ArtistRepository>();
 
 WebApplication app = builder.Build();
 
