@@ -6,11 +6,12 @@ public class Album
 {
     private const int TITLE_MINIMUM_LENGTH = 5;
 
-    private Album(int id, int artistId, string title)
+    private Album(int id, int artistId, string title, string imageUrl)
     {
         Id = id;
         ArtistId = artistId;
         Title = title;
+        ImageUrl = imageUrl;
     }
 
     public int Id { get; set; }
@@ -22,10 +23,13 @@ public class Album
 
     public DateTime ReleaseDate { get; set; } = DateTime.Now;
 
+    public string ImageUrl { get; set; } = null!;
+
     public static (Album album, ICollection<string> errors) Create(
         int id,
         int artistId,
-        string title
+        string title,
+        string imageUrl
     )
     {
         ICollection<string> errors = new List<string>();
@@ -33,6 +37,11 @@ public class Album
         if (string.IsNullOrEmpty(title))
         {
             errors.Add("Title is null");
+        }
+
+        if (string.IsNullOrEmpty(imageUrl))
+        {
+            errors.Add("Image Url is null");
         }
 
         if (title.Length < TITLE_MINIMUM_LENGTH)
