@@ -5,14 +5,15 @@ namespace WebApplication1.Models;
 public class Artist
 {
     private const int MINIMUM_NAME_LENGTH = 5;
-    
-    private Artist()
+
+    private Artist(int id, string name)
     {
-        
+        Id = id;
+        Name = name;
     }
-    
+
     public int Id { get; private set; }
-    
+
     [MaxLength(250)]
     public string Name { get; private set; } = null!;
 
@@ -29,7 +30,7 @@ public class Artist
         {
             errors.Add("Name must be at least 5 characters long.");
         }
-        
+
         Artist artist = new Artist(id, name);
 
         return (artist, errors);

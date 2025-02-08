@@ -13,11 +13,11 @@
     </ItemGroup>
 
     <ItemGroup>
-      <ProjectReference Include="..\WebApplication1\WebApplication1.csproj" />
+      <Folder Include="Configurations\" />
     </ItemGroup>
 
     <ItemGroup>
-      <Folder Include="Configurations\" />
+      <ProjectReference Include="..\WebApplication1.Models\WebApplication1.Models.csproj" />
     </ItemGroup>
 
 </Project>

@@ -1,8 +1,16 @@
+using Microsoft.EntityFrameworkCore;
+using WebApplication1.DataAccess;
+
 WebApplicationBuilder builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 builder.Services.AddControllersWithViews();
-builder.Services.AddDbContext<>();
+builder.Services.AddDbContext<MusicDbContext>(options =>
+{
+    options
+        .UseNpgsql(builder.Configuration.GetConnectionString(nameof(MusicDbContext)))
+        .UseLazyLoadingProxies();
+});
 
 WebApplication app = builder.Build();
 
@@ -15,6 +23,7 @@ if (!app.Environment.IsDevelopment())
 }
 
 app.UseHttpsRedirection();
+
 app.UseStaticFiles();
 
 app.UseRouting();
