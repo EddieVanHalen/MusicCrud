@@ -2,25 +2,26 @@ using Microsoft.EntityFrameworkCore;
 using WebApplication1.DataAccess.Entities;
 using WebApplication1.Models;
 using WebApplication1.Models.Abstractions.Repository;
+using WebApplication1.Models.Models;
 
 namespace WebApplication1.DataAccess.Repository;
 
 public class ArtistRepository : IArtistRepository
 {
     private readonly MusicDbContext _dbContext;
-
+    
     public ArtistRepository(MusicDbContext dbContext)
     {
         _dbContext = dbContext;
     }
 
-    public async Task<IEnumerable<Artist>> GetAllArtistsAsync()
+    public async Task<List<Artist>> GetAllArtistsAsync()
     {
-        IEnumerable<ArtistEntity> artistEntities = await _dbContext
+        List<ArtistEntity> artistEntities = await _dbContext
             .Artists.AsNoTracking()
             .ToListAsync();
 
-        return artistEntities.Select(a => Artist.Create(a.Id, a.Name).artist);
+        return artistEntities.Select(a => Artist.Create(a.Id, a.Name, a.LogoUrl).artist).ToList();
     }
 
     public async Task<Artist> GetArtistByIdAsync(int id)
@@ -32,7 +33,7 @@ public class ArtistRepository : IArtistRepository
             return null;
         }
 
-        return Artist.Create(artistEntity.Id, artistEntity.Name).artist;
+        return Artist.Create(artistEntity.Id, artistEntity.Name, artistEntity.LogoUrl).artist;
     }
 
     public async Task<int> AddArtistAsync(Artist artist)
