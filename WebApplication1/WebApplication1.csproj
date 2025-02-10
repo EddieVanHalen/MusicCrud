@@ -32,4 +32,20 @@
       <ProjectReference Include="..\WebApplication1.Models\WebApplication1.Models.csproj" />
     </ItemGroup>
 
+    <ItemGroup>
+      <_ContentIncludedByDefault Remove="Views\Artists\Home\AddAlbum.cshtml" />
+      <_ContentIncludedByDefault Remove="Views\Artists\Home\AddArtist.cshtml" />
+      <_ContentIncludedByDefault Remove="Views\Artists\Home\Albums.cshtml" />
+      <_ContentIncludedByDefault Remove="Views\Artists\Home\Artists.cshtml" />
+      <_ContentIncludedByDefault Remove="Views\Artists\Home\UpdateArtist.cshtml" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <AdditionalFiles Include="Views\Home\AddAlbum.cshtml" />
+      <AdditionalFiles Include="Views\Home\AddArtist.cshtml" />
+      <AdditionalFiles Include="Views\Home\Albums.cshtml" />
+      <AdditionalFiles Include="Views\Home\Artists.cshtml" />
+      <AdditionalFiles Include="Views\Home\UpdateArtist.cshtml" />
+    </ItemGroup>
+
 </Project>

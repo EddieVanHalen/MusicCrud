@@ -34,6 +34,6 @@ app.UseRouting();
 
 app.MapControllerRoute(
     name: "default",
-    pattern: "{controller=Home}/{action=Artists}/{id?}");
+    pattern: "{controller=Artists}/{action=Index}/{id?}");
 
 app.Run();

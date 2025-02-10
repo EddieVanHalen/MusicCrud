@@ -1,0 +1,16 @@
+@model Artist
+
+@{
+    ViewData["Title"] = "Details";
+    Layout = "_Layout";
+}
+
+<h1>Artists</h1>
+
+<div>
+    <div>
+        @Model.Name
+    </div>
+    
+    <img src="@Model.LogoUrl" alt="Artist's Logo"/>
+</div>

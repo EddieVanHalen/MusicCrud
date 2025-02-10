@@ -5,26 +5,25 @@
     ViewData["Title"] = "Home Page";
 }
 
+<h1>Artists</h1>
+
 <div class="container-fluid p-4">
     <h2 class="text-center mb-5 display-4">Featured Artists</h2>
-      
+
     @foreach (Artist artist in @Model)
-    {
+    { 
         <div class="row g-4">
             <div class="col-12 col-md-6 col-lg-4 col-xl-3">
                 <div class="card album-card shadow-lg h-100">
-                    <img src="@artist.LogoUrl"
-                         class="card-img-top album-cover"
-                         alt="Artist's Logo">
+                    <img src="@artist.LogoUrl" class="card-img-top album-cover" alt="Artist's Logo">
                     <div class="card-body text-center">
-                        <h5 class="card-title fw-bold">@artist.Name</h5>
+                        <h5 class="card-title fw-bold">asd</h5>
                     </div>
+                    <a asp-controller="Artists" asp-action="Details" asp-route-id="@artist.Id" class="btn btn-primary">Details...</a>
                 </div>
             </div>
         </div>
     }
-
-    https://discography.ledzeppelin.com/images/cd.jpg
 </div>
 
 <style>
@@ -36,7 +35,7 @@
 
     .album-card:hover {
         transform: translateY(-5px);
-        box-shadow: 0 10px 20px rgba(0,0,0,0.15);
+        box-shadow: 0 10px 20px rgba(0, 0, 0, 0.15);
     }
 
     .album-cover {

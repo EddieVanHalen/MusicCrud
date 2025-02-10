@@ -24,7 +24,7 @@ public class ArtistRepository : IArtistRepository
         return artistEntities.Select(a => Artist.Create(a.Id, a.Name, a.LogoUrl).artist).ToList();
     }
 
-    public async Task<Artist> GetArtistByIdAsync(int id)
+    public async Task<Artist?> GetArtistByIdAsync(int id)
     {
         ArtistEntity? artistEntity = await _dbContext.Artists.FirstOrDefaultAsync(a => a.Id == id);
 
@@ -41,6 +41,7 @@ public class ArtistRepository : IArtistRepository
         ArtistEntity artistEntity = new ArtistEntity
         {
             Name = artist.Name,
+            LogoUrl = artist.LogoUrl
         };
 
         await _dbContext.Artists.AddAsync(artistEntity);

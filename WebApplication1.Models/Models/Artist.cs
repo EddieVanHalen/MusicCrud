@@ -1,3 +1,4 @@
+using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 
 namespace WebApplication1.Models.Models;
@@ -23,7 +24,7 @@ public class Artist
     [MinLength(5), MaxLength(250)]
     public string Name { get; private set; } = null!;
     
-    [Required]
+    [Required, DisplayName("Logo Url")]
     public string LogoUrl { get; private set; } = null!;
 
     public static (Artist artist, ICollection<string> errors) Create(int id, string name, string logoUrl)
