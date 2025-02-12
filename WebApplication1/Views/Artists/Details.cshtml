@@ -2,7 +2,6 @@
 
 @{
     ViewData["Title"] = "Details";
-    Layout = "_Layout";
 }
 
 <h1>Artists</h1>
@@ -11,6 +10,8 @@
     <div>
         @Model.Name
     </div>
-    
+
     <img src="@Model.LogoUrl" alt="Artist's Logo"/>
+
+    <a asp-controller="Artists" asp-action="UpdateArtist" asp-route-id="@Model.Id" class="btn btn-primary">Details...</a>
 </div>

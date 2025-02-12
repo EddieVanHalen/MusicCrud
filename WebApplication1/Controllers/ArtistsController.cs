@@ -20,35 +20,45 @@ public class ArtistsController : Controller
 
         return View(artists);
     }
-    
+
     [HttpGet]
     public IActionResult AddArtist()
     {
         return View();
     }
-    
+
     [HttpPost]
     public async Task<IActionResult> AddArtistAction(string name, string logoUrl)
     {
         Artist artist = Artist.Create(0, name, logoUrl).artist;
-        
+
         await _artistRepository.AddArtistAsync(artist);
 
         return RedirectToAction(nameof(Index));
     }
-    
-    [HttpGet]
-    public async Task<IActionResult> UpdateArtistAction(Artist artist)
+
+    [HttpPost]
+    public async Task<IActionResult> UpdateArtistAction(int id, string name, string logoUrl)
     {
+        Console.WriteLine($"------------ {id}");
+        Console.WriteLine($"------------ {name}");
+        Console.WriteLine($"------------ {logoUrl}");
+
+        Artist artist = Artist.Create(id, name, logoUrl).artist;
+
         await _artistRepository.UpdateArtistAsync(artist);
 
         return RedirectToAction(nameof(Index));
     }
-    
+
     [HttpGet]
-    public IActionResult UpdateArtist(int id)
+    public async Task<IActionResult> UpdateArtist(int id)
     {
-        return View();
+        Artist? artist = await _artistRepository.GetArtistByIdAsync(id);
+
+        if(artist is null) return NotFound();
+
+        return View(artist);
     }
 
     [HttpGet]
@@ -57,7 +67,7 @@ public class ArtistsController : Controller
         Artist? artist = await _artistRepository.GetArtistByIdAsync(id);
 
         if (artist is null) return NotFound();
-        
+
         return View(artist);
     }
 }

@@ -9,7 +9,7 @@ namespace WebApplication1.DataAccess.Repository;
 public class ArtistRepository : IArtistRepository
 {
     private readonly MusicDbContext _dbContext;
-    
+
     public ArtistRepository(MusicDbContext dbContext)
     {
         _dbContext = dbContext;
@@ -53,8 +53,11 @@ public class ArtistRepository : IArtistRepository
     public async Task<int> UpdateArtistAsync(Artist artist)
     {
         await _dbContext
-            .Artists.Where(a => a.Id == artist.Id)
-            .ExecuteUpdateAsync(setters => setters.SetProperty(x => x.Name, artist.Name));
+            .Artists
+            .Where(a => a.Id == artist.Id)
+                .ExecuteUpdateAsync(setters => setters
+                    .SetProperty(x => x.Name, artist.Name)
+                    .SetProperty(x => x.LogoUrl, artist.LogoUrl));
 
         await _dbContext.SaveChangesAsync();
 

@@ -1,16 +1,24 @@
-﻿@model WebApplication1.Models.Models.Artist;
+﻿@model Artist;
 
 @{
-    ViewData["Title"] = "Add Artist";
+    ViewData["Title"] = "Update Artist";
 }
 
-<h1>Add Artist</h1>
+<h1>Update Artist</h1>
 
-<form method="post" asp-controller="Home" asp-action="UpdateArtistAction">
+<form method="post" asp-controller="Artists" asp-action="UpdateArtistAction">
+    <input type="hidden" asp-for="Id" />
+
     <div class="form-group">
         <label style="cursor:pointer;" asp-for="Name"></label>
         <input type="text" class="form-control my-2" asp-for="Name">
         <span style="color:red" asp-validation-for="Name"></span>
+    </div>
+
+    <div class="form-group">
+        <label style="cursor:pointer;" asp-for="LogoUrl"></label>
+        <input type="text" class="form-control my-2" asp-for="LogoUrl">
+        <span style="color:red" asp-validation-for="LogoUrl"></span>
     </div>
 
     <button type="submit" class="btn btn-primary">Submit</button>
