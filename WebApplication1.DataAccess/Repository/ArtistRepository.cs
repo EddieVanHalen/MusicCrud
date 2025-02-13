@@ -1,6 +1,5 @@
 using Microsoft.EntityFrameworkCore;
 using WebApplication1.DataAccess.Entities;
-using WebApplication1.Models;
 using WebApplication1.Models.Abstractions.Repository;
 using WebApplication1.Models.Models;
 
@@ -28,6 +27,18 @@ public class ArtistRepository : IArtistRepository
     {
         ArtistEntity? artistEntity = await _dbContext.Artists.FirstOrDefaultAsync(a => a.Id == id);
 
+        if (artistEntity is null)
+        {
+            return null;
+        }
+
+        return Artist.Create(artistEntity.Id, artistEntity.Name, artistEntity.LogoUrl).artist;
+    }
+
+    public async Task<Artist?> GetArtistByNameAsync(string name)
+    {
+        ArtistEntity? artistEntity = await _dbContext.Artists.FirstOrDefaultAsync(a => a.Name.ToLower() == name);
+        
         if (artistEntity is null)
         {
             return null;

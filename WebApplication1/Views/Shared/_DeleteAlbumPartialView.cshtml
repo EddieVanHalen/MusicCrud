@@ -1,0 +1,35 @@
+@model Album;
+
+@{
+    ViewData["Title"] = "Delete";
+}
+
+<div>
+    <h4>Product</h4>
+    <hr/>
+    <dl class="row">
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.Title)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.Title)
+        </dd>
+        <dt class="col-sm-2">
+            Image
+        </dt>
+        <dd class="col-sm-10">
+            <img alt="Artist's Logo" src="@Model.ImageUrl" width="100"/>
+        </dd>
+    </dl>
+
+    <form method="post" asp-controller="Albums" asp-action="DeleteAction">
+        <input type="hidden" asp-for="Id"/>
+        <button class="btn btn-danger" type="submit">
+            Delete
+        </button>
+
+        <a asp-controller="Albums" asp-action="Index" class="btn btn-secondary">
+            Back
+        </a>
+    </form>
+</div>

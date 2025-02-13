@@ -19,11 +19,11 @@ public class AlbumEntity
 
     public int ArtistId { get; set; }
             
-    public string Title { get; set; } = null!;
+    public string Title { get; set; } = string.Empty;
 
-    public DateTime ReleaseDate { get; set; } = DateTime.Now;
+    public DateTime ReleaseDate { get; set; } = DateTime.Now.ToUniversalTime();
 
-    public string ImageUrl { get; set; } = null!;
+    public string ImageUrl { get; set; } = string.Empty;
 
-    public virtual ArtistEntity Artist { get; set; } = null!;
+    public virtual ArtistEntity? Artist { get; set; }
 }

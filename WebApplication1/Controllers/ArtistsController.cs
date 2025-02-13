@@ -1,4 +1,5 @@
 using Microsoft.AspNetCore.Mvc;
+using WebApplication1.DTOs;
 using WebApplication1.Models.Abstractions.Repository;
 using WebApplication1.Models.Models;
 
@@ -38,13 +39,14 @@ public class ArtistsController : Controller
     }
 
     [HttpPost]
-    public async Task<IActionResult> UpdateArtistAction(int id, string name, string logoUrl)
+    public async Task<IActionResult> UpdateAction(ArtistRequest request)
     {
-        Console.WriteLine($"------------ {id}");
-        Console.WriteLine($"------------ {name}");
-        Console.WriteLine($"------------ {logoUrl}");
+        (Artist artist, IEnumerable<string> errors) = Artist.Create(request.Id, request.Name, request.LogoUrl);
 
-        Artist artist = Artist.Create(id, name, logoUrl).artist;
+        if (errors.Any())
+        {
+            return BadRequest(errors);
+        }
 
         await _artistRepository.UpdateArtistAsync(artist);
 
@@ -52,7 +54,28 @@ public class ArtistsController : Controller
     }
 
     [HttpGet]
-    public async Task<IActionResult> UpdateArtist(int id)
+    public async Task<IActionResult> Delete(int id)
+    {
+        Artist? artist = await _artistRepository.GetArtistByIdAsync(id);
+
+        if (artist is null)
+        {
+            return NotFound();
+        }
+        
+        return View(artist);
+    }
+
+    [HttpPost]
+    public async Task<IActionResult> DeleteAction(int id)
+    {
+        await _artistRepository.DeleteArtistByIdAsync(id);
+        
+        return RedirectToAction(nameof(Index));
+    }
+    
+    [HttpGet]
+    public async Task<IActionResult> Update(int id)
     {
         Artist? artist = await _artistRepository.GetArtistByIdAsync(id);
 

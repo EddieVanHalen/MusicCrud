@@ -2,11 +2,12 @@
 
 @{
     ViewData["Title"] = "Update Artist";
+    Layout = "_Layout";
 }
 
 <h1>Update Artist</h1>
 
-<form method="post" asp-controller="Artists" asp-action="UpdateArtistAction">
+<form method="post" asp-controller="Artists" asp-action="UpdateAction">
     <input type="hidden" asp-for="Id" />
 
     <div class="form-group">

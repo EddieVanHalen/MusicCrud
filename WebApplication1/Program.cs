@@ -16,6 +16,8 @@ builder.Services.AddDbContext<MusicDbContext>(options =>
 
 builder.Services.AddScoped<IArtistRepository, ArtistRepository>();
 
+builder.Services.AddScoped<IAlbumsRepository, AlbumsRepository>();
+
 WebApplication app = builder.Build();
 
 // Configure the HTTP request pipeline.

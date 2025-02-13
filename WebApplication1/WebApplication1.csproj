@@ -41,11 +41,8 @@
     </ItemGroup>
 
     <ItemGroup>
-      <AdditionalFiles Include="Views\Home\AddAlbum.cshtml" />
-      <AdditionalFiles Include="Views\Home\AddArtist.cshtml" />
-      <AdditionalFiles Include="Views\Home\Albums.cshtml" />
-      <AdditionalFiles Include="Views\Home\Artists.cshtml" />
-      <AdditionalFiles Include="Views\Home\UpdateArtist.cshtml" />
+      <AdditionalFiles Include="Views\Albums\AddAlbum.cshtml" />
+      <AdditionalFiles Include="Views\Albums\Albums.cshtml" />
     </ItemGroup>
 
 </Project>
