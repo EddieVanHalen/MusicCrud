@@ -42,7 +42,6 @@
 
     <ItemGroup>
       <AdditionalFiles Include="Views\Albums\AddAlbum.cshtml" />
-      <AdditionalFiles Include="Views\Albums\Albums.cshtml" />
     </ItemGroup>
 
 </Project>

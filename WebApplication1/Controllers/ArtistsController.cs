@@ -8,17 +8,20 @@ namespace WebApplication1.Controllers;
 public class ArtistsController : Controller
 {
     private readonly IArtistRepository _artistRepository;
+    private readonly ILogger<ArtistsController> _logger;
 
-    public ArtistsController(IArtistRepository artistRepository)
+    public ArtistsController(IArtistRepository artistRepository, ILogger<ArtistsController> logger)
     {
         _artistRepository = artistRepository;
+        _logger = logger;
     }
 
     [HttpGet]
     public async Task<IActionResult> Index()
     {
         List<Artist> artists = await _artistRepository.GetAllArtistsAsync();
-
+        
+        _logger.LogInformation($"Retrieved {artists.Count} artists");
         return View(artists);
     }
 
@@ -29,38 +32,57 @@ public class ArtistsController : Controller
     }
 
     [HttpPost]
-    public async Task<IActionResult> AddArtistAction(string name, string logoUrl)
+    public async Task<IActionResult> AddArtistAction(ArtistRequest artistRequest)
     {
-        Artist artist = Artist.Create(0, name, logoUrl).artist;
+        Artist artist = Artist.Create(0, artistRequest.Name, artistRequest.LogoUrl).artist;
 
-        await _artistRepository.AddArtistAsync(artist);
+        int result = await _artistRepository.AddArtistAsync(artist);
 
+        if (result == 0)
+        {
+            TempData["danger"] = "Artist wasn't added";
+            _logger.LogError($"Artist wasn't added {artistRequest.Name}");
+            return RedirectToAction(nameof(Index));
+        }
+        
+        TempData["success"] = "Artist was added successfully";
+        _logger.LogInformation($"Artist was added {artistRequest.Name}");
         return RedirectToAction(nameof(Index));
     }
 
     [HttpPost]
     public async Task<IActionResult> UpdateAction(ArtistRequest request)
     {
-        (Artist artist, IEnumerable<string> errors) = Artist.Create(request.Id, request.Name, request.LogoUrl);
+        (Artist artist, ICollection<string> errors) = Artist.Create(request.Id, request.Name, request.LogoUrl);
 
         if (errors.Any())
         {
+            TempData["danger"] = string.Join("; ", errors);
             return BadRequest(errors);
         }
 
-        await _artistRepository.UpdateArtistAsync(artist);
+        int result = await _artistRepository.UpdateArtistAsync(artist);
 
+        if (result == 0)
+        {
+            TempData["danger"] = "Artist wasn't updated";
+            _logger.LogError($"Artist wasn't updated {artist.Name}");
+            return RedirectToAction(nameof(Index));
+        }
+        
+        TempData["success"] = "Artist was updated successfully";
+        _logger.LogInformation($"Artist was updated {artist.Name}");
         return RedirectToAction(nameof(Index));
     }
 
     [HttpGet]
     public async Task<IActionResult> Delete(int id)
     {
-        Artist? artist = await _artistRepository.GetArtistByIdAsync(id);
+        Artist artist = await _artistRepository.GetArtistByIdAsync(id);
 
-        if (artist is null)
+        if (artist.Id == 0)
         {
-            return NotFound();
+            return NotFound("Artist was not found");
         }
         
         return View(artist);
@@ -69,17 +91,28 @@ public class ArtistsController : Controller
     [HttpPost]
     public async Task<IActionResult> DeleteAction(int id)
     {
-        await _artistRepository.DeleteArtistByIdAsync(id);
+        int result = await _artistRepository.DeleteArtistByIdAsync(id);
+
+        if (result == 0)
+        {
+            TempData["danger"] = "Artist wasn't deleted";
+            _logger.LogError($"Artist wasn't deleted {id}");
+            return RedirectToAction(nameof(Index));
+        }
         
+        TempData["success"] = "Artist was deleted successfully";
         return RedirectToAction(nameof(Index));
     }
     
     [HttpGet]
     public async Task<IActionResult> Update(int id)
     {
-        Artist? artist = await _artistRepository.GetArtistByIdAsync(id);
+        Artist artist = await _artistRepository.GetArtistByIdAsync(id);
 
-        if(artist is null) return NotFound();
+        if (artist.Id == 0)
+        {
+            return NotFound("Artist wasn't found");
+        }
 
         return View(artist);
     }
@@ -87,9 +120,12 @@ public class ArtistsController : Controller
     [HttpGet]
     public async Task<IActionResult> Details(int id)
     {
-        Artist? artist = await _artistRepository.GetArtistByIdAsync(id);
+        Artist artist = await _artistRepository.GetArtistByIdAsync(id);
 
-        if (artist is null) return NotFound();
+        if (artist.Id == 0)
+        {
+            return NotFound("Artist wasn't found");
+        }
 
         return View(artist);
     }

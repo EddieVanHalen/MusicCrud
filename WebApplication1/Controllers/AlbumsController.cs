@@ -13,7 +13,8 @@ public class AlbumsController : Controller
     private readonly IAlbumsRepository _albumsRepository;
     private readonly IArtistRepository _artistsRepository;
 
-    public AlbumsController(ILogger<AlbumsController> logger, IAlbumsRepository albumsRepository, IArtistRepository artistsRepository)
+    public AlbumsController(ILogger<AlbumsController> logger, IAlbumsRepository albumsRepository,
+        IArtistRepository artistsRepository)
     {
         _logger = logger;
         _albumsRepository = albumsRepository;
@@ -24,7 +25,7 @@ public class AlbumsController : Controller
     public async Task<IActionResult> Index()
     {
         List<Album> albums = await _albumsRepository.GetAllAlbumsAsync();
-        
+
         return View(albums);
     }
 
@@ -33,97 +34,135 @@ public class AlbumsController : Controller
     {
         return View();
     }
-    
+
     [HttpGet]
     public async Task<IActionResult> Update(int id)
     {
-        Album? album = await _albumsRepository.GetAlbumByIdAsync(id);
+        Album album = await _albumsRepository.GetAlbumByIdAsync(id);
 
-        if (album is null)
+        if (album.Id == 0)
         {
-            return NotFound();
+            return NotFound("Album not found");
         }
-        
-        Artist? artist = await _artistsRepository.GetArtistByIdAsync(album.ArtistId);
+
+        Artist artist = await _artistsRepository.GetArtistByIdAsync(album.ArtistId);
+
+        if (artist.Id == 0)
+        {
+            return NotFound("Artist not found");
+        }
 
         AlbumDTO data = new AlbumDTO
         {
             Id = album.Id,
-            Artist = artist!.Name,
+            Artist = artist.Name,
             Title = album.Title,
             ImageUrl = album.ImageUrl,
         };
-        
+
         return View(data);
     }
 
     [HttpGet]
     public async Task<IActionResult> Delete(int id)
     {
-        Album? album = await _albumsRepository.GetAlbumByIdAsync(id);
+        Album album = await _albumsRepository.GetAlbumByIdAsync(id);
 
-        if (album is null)
+        if (album.Id == 0)
         {
-            return NotFound();
+            return NotFound("Album not found");
         }
-        
+
         return View(album);
     }
 
     [HttpPost]
     public async Task<IActionResult> DeleteAction(int id)
     {
-        await _albumsRepository.DeleteAlbumByIdAsync(id);
+        int result = await _albumsRepository.DeleteAlbumByIdAsync(id);
+
+        if (result == 0)
+        {
+            TempData["danger"] = "Album wasn't deleted";
+            _logger.LogInformation($"Album wasn't deleted {id}");
+            return RedirectToAction("Index");
+        }
         
+        TempData["success"] = "Album was deleted";
         return RedirectToAction(nameof(Index));
     }
-    
+
     [HttpPost]
     public async Task<IActionResult> UpdateAction(AlbumDTO request)
     {
-        Artist? artist = await _artistsRepository.GetArtistByNameAsync(request.Artist.ToLower());
+        if (!ModelState.IsValid)
+        {
+            return BadRequest(ModelState);
+        }
 
-        if (artist is null)
+        Artist artist = await _artistsRepository.GetArtistByNameAsync(request.Artist.ToLower());
+
+        if (artist.Id == 0)
         {
             return NotFound("Artist not found");
         }
+
+        (Album album, ICollection<string> errors) =
+            Album.Create(request.Id, artist.Id, request.Title, request.ImageUrl);
+
+        if (errors.Any())
+        {
+            return BadRequest(errors);
+        }
+
+        int result = await _albumsRepository.UpdateAlbumAsync(album);
+
+        if (result == 0)
+        {
+            TempData["danger"] = "Album wasn't updated";
+            _logger.LogError($"Album wasn't updated {request.Id}");
+            return RedirectToAction("Index");
+        }
         
-        Album? album = Album.Create(request.Id ,artist.Id, request.Title, request.ImageUrl).album;
-        
-        await _albumsRepository.UpdateAlbumAsync(album);
-        
+        TempData["success"] = "Album was updated";
         return RedirectToAction(nameof(Index));
     }
-    
+
+
     [HttpGet]
     public async Task<IActionResult> Details(int id)
     {
-        Album? album = await _albumsRepository.GetAlbumByIdAsync(id);
+        Album album = await _albumsRepository.GetAlbumByIdAsync(id);
 
-        if (album is null)
+        if (album.Id == 0)
         {
-            return NotFound();
+            return NotFound("Album not found");
         }
-        
-        Artist? artist = await _artistsRepository.GetArtistByIdAsync(album.ArtistId);
+
+        Artist artist = await _artistsRepository.GetArtistByIdAsync(album.ArtistId);
+
+        if (artist.Id == 0)
+        {
+            return NotFound("Artist not found for this album");
+        }
 
         AlbumDTO data = new AlbumDTO
         {
             Id = album.Id,
-            Artist = artist!.Name,
+            Artist = artist.Name,
             Title = album.Title,
             ImageUrl = album.ImageUrl,
         };
-        
+
         return View(data);
     }
 
     [HttpPost]
     public async Task<IActionResult> AddAlbumAction(AlbumRequest request)
     {
-        Artist? artist = await _artistsRepository.GetArtistByNameAsync(request.Artist.ToLower());
+        Artist artist = await _artistsRepository.GetArtistByNameAsync(request.Artist.ToLower());
 
-        if (artist is null)
+        if (artist.Id == 0)
         {
             return BadRequest("Artist not found");
         }
@@ -134,9 +173,17 @@ public class AlbumsController : Controller
         {
             return BadRequest(errors);
         }
+
+        int result = await _albumsRepository.AddAlbumAsync(album);
         
-        await _albumsRepository.AddAlbumAsync(album);
-        
+        if (result == 0)
+        {
+            TempData["danger"] = "Album wasn't added";
+            _logger.LogError($"Album wasn't added {request.Title}");
+            return RedirectToAction("Index");
+        }
+    
+        TempData["success"] = "Album was added";
         return RedirectToAction(nameof(Index));
     }
 }

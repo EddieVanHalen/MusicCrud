@@ -6,6 +6,11 @@ public class Album
 {
     private const int TITLE_MINIMUM_LENGTH = 5;
 
+    public Album()
+    {
+        
+    }
+
     private Album(int id, int artistId, string title, string imageUrl)
     {
         Id = id;

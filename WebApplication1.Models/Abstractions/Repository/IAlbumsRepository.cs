@@ -5,7 +5,8 @@ namespace WebApplication1.Models.Abstractions.Repository;
 public interface IAlbumsRepository
 {
     Task<List<Album>> GetAllAlbumsAsync();
-    Task<Album?> GetAlbumByIdAsync(int id);
+    Task<Album> GetAlbumByIdAsync(int id);
+    Task<Album> GetAlbumByNameAsync(string title);
     Task<int> AddAlbumAsync(Album album);
     Task<int> UpdateAlbumAsync(Album album);
     Task<int> DeleteAlbumByIdAsync(int id);

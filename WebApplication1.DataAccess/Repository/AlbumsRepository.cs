@@ -1,6 +1,6 @@
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Logging;
 using WebApplication1.DataAccess.Entities;
-using WebApplication1.Models;
 using WebApplication1.Models.Abstractions.Repository;
 using WebApplication1.Models.Models;
 
@@ -10,68 +10,131 @@ public class AlbumsRepository : IAlbumsRepository
 {
     private readonly MusicDbContext _dbContext;
 
-    public AlbumsRepository(MusicDbContext dbContext)
+    private readonly ILogger<AlbumsRepository> _logger;
+
+    public AlbumsRepository(MusicDbContext dbContext, ILogger<AlbumsRepository> logger)
     {
         _dbContext = dbContext;
+        _logger = logger;
     }
 
     public async Task<List<Album>> GetAllAlbumsAsync()
     {
-        List<AlbumEntity> albumEntities = await _dbContext
-            .Albums.AsNoTracking()
-            .ToListAsync();
+        try
+        {
+            List<AlbumEntity> albumEntities = await _dbContext
+                .Albums.AsNoTracking()
+                .ToListAsync();
 
-        return albumEntities.Select(a => Album.Create(a.Id, a.ArtistId, a.Title, a.ImageUrl).album).ToList();
+            return albumEntities.Select(a => Album.Create(a.Id, a.ArtistId, a.Title, a.ImageUrl).album).ToList();
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex, $"Error occurred while fetching all albums : {ex.Message}");
+            return new List<Album>();
+        }
     }
 
-    public async Task<Album?> GetAlbumByIdAsync(int id)
+    public async Task<Album> GetAlbumByIdAsync(int id)
     {
-        AlbumEntity? albumEntity = await _dbContext.Albums.FirstOrDefaultAsync(x => x.Id == id);
-
-        if (albumEntity is null)
+        try
         {
-            return null;
+            AlbumEntity? albumEntity = await _dbContext.Albums.FirstOrDefaultAsync(x => x.Id == id);
+
+            if (albumEntity is null)
+            {
+                return new Album();
+            }
+
+            return Album.Create(albumEntity.Id, albumEntity.ArtistId, albumEntity.Title, albumEntity.ImageUrl).album;
         }
-        
-        return Album.Create(albumEntity.Id, albumEntity.ArtistId, albumEntity.Title, albumEntity.ImageUrl).album;
+        catch (Exception ex)
+        {
+            _logger.LogError(ex, $"Error occurred while fetching album by id : {ex.Message}");
+            return new Album();
+        }
+    }
+
+    public async Task<Album> GetAlbumByNameAsync(string title)
+    {
+        try
+        {
+            AlbumEntity? albumEntity = await _dbContext.Albums.FirstOrDefaultAsync(x => x.Title == title);
+
+            if (albumEntity is null)
+            {
+                return new Album();
+            }
+
+            return Album.Create(albumEntity.Id, albumEntity.ArtistId, albumEntity.Title, albumEntity.ImageUrl).album;
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex, $"Error occurred while fetching album by name : {ex.Message}");
+            return new Album();
+        }
     }
 
     public async Task<int> AddAlbumAsync(Album album)
     {
-        AlbumEntity albumEntity = new AlbumEntity
+        try
         {
-            ArtistId = album.ArtistId,
-            Title = album.Title,
-            ImageUrl = album.ImageUrl,
-        };
+            AlbumEntity albumEntity = new AlbumEntity
+            {
+                ArtistId = album.ArtistId,
+                Title = album.Title,
+                ImageUrl = album.ImageUrl,
+            };
 
-        await _dbContext.Albums.AddAsync(albumEntity);
-        await _dbContext.SaveChangesAsync();
+            await _dbContext.Albums.AddAsync(albumEntity);
+            await _dbContext.SaveChangesAsync();
 
-        return albumEntity.Id;
+            return albumEntity.Id;
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex, $"Error occurred while adding album : {ex.Message}");
+            return 0;
+        }
     }
 
     public async Task<int> UpdateAlbumAsync(Album album)
     {
-        await _dbContext
-            .Albums
-            .Where(a => a.Id == album.Id)
-            .ExecuteUpdateAsync(setters => setters
-                .SetProperty(x => x.Title, album.Title)
-                .SetProperty(x => x.ImageUrl, album.ImageUrl)
-                .SetProperty(x => x.ArtistId, album.ArtistId));
+        try
+        {
+            await _dbContext
+                .Albums
+                .Where(a => a.Id == album.Id)
+                .ExecuteUpdateAsync(setters => setters
+                    .SetProperty(x => x.Title, album.Title)
+                    .SetProperty(x => x.ImageUrl, album.ImageUrl)
+                    .SetProperty(x => x.ArtistId, album.ArtistId));
 
-        await _dbContext.SaveChangesAsync();
+            await _dbContext.SaveChangesAsync();
 
-        return album.Id;
+            return album.Id;
+        }
+        catch (Exception e)
+        {
+            _logger.LogError(e, $"Error occurred while updating album : {e.Message}");
+            return 0;
+        }
     }
 
     public async Task<int> DeleteAlbumByIdAsync(int id)
     {
-        await _dbContext.Albums.Where(x => x.Id == id).ExecuteDeleteAsync();
+        try
+        {
+            await _dbContext.Albums.Where(x => x.Id == id).ExecuteDeleteAsync();
 
-        await _dbContext.SaveChangesAsync();
+            await _dbContext.SaveChangesAsync();
 
-        return id;
+            return id;
+        }
+        catch (Exception e)
+        {
+            _logger.LogError(e, $"Error occurred while deleting album : {e.Message}");
+            return 0;
+        }
     }
 }
