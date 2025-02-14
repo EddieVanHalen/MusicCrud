@@ -7,6 +7,8 @@
 
 <h1>Update Artist</h1>
 
+@await Html.PartialAsync("_AlertPartialView")
+
 <form method="post" asp-controller="Artists" asp-action="UpdateAction">
     <input type="hidden" asp-for="Id" />
 

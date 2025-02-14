@@ -7,6 +7,8 @@
 
 <h1>Add Artist</h1>
 
+@await Html.PartialAsync("_AlertPartialView")
+
 <form method="post" asp-controller="Artists" asp-action="AddArtistAction">
     <div class="form-group">
         <label style="cursor:pointer;" asp-for="Name"></label>

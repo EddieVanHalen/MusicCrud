@@ -42,14 +42,16 @@ public class AlbumsController : Controller
 
         if (album.Id == 0)
         {
-            return NotFound("Album not found");
+            TempData["danger"] = "Album Not Found";
+            return RedirectToAction(nameof(Index));
         }
 
         Artist artist = await _artistsRepository.GetArtistByIdAsync(album.ArtistId);
 
         if (artist.Id == 0)
         {
-            return NotFound("Artist not found");
+            TempData["danger"] = "Artist Not Found";
+            return RedirectToAction(nameof(Index));
         }
 
         AlbumDTO data = new AlbumDTO
@@ -70,7 +72,8 @@ public class AlbumsController : Controller
 
         if (album.Id == 0)
         {
-            return NotFound("Album not found");
+            TempData["danger"] = "Album not found";
+            return RedirectToAction(nameof(Index));
         }
 
         return View(album);
@@ -95,16 +98,26 @@ public class AlbumsController : Controller
     [HttpPost]
     public async Task<IActionResult> UpdateAction(AlbumDTO request)
     {
+        List<Album> albums = await _albumsRepository.GetAllAlbumsAsync();
+
+        if (albums.FirstOrDefault(x => x.Title == request.Title) is not null)
+        {
+            TempData["danger"] = "Title already exists";
+            return RedirectToAction(nameof(Update));
+        }
+        
         if (!ModelState.IsValid)
         {
-            return BadRequest(ModelState);
+            TempData["danger"] = "Invalid request";
+            return RedirectToAction(nameof(Update));
         }
 
         Artist artist = await _artistsRepository.GetArtistByNameAsync(request.Artist.ToLower());
 
         if (artist.Id == 0)
         {
-            return NotFound("Artist not found");
+            TempData["danger"] = "Artist not found";
+            return RedirectToAction(nameof(Update));
         }
 
         (Album album, ICollection<string> errors) =
@@ -112,7 +125,8 @@ public class AlbumsController : Controller
 
         if (errors.Any())
         {
-            return BadRequest(errors);
+            TempData["danger"] = "Invalid request";
+            return RedirectToAction(nameof(Update));
         }
 
         int result = await _albumsRepository.UpdateAlbumAsync(album);
@@ -121,7 +135,7 @@ public class AlbumsController : Controller
         {
             TempData["danger"] = "Album wasn't updated";
             _logger.LogError($"Album wasn't updated {request.Id}");
-            return RedirectToAction("Index");
+            return RedirectToAction(nameof(Update));
         }
         
         TempData["success"] = "Album was updated";
@@ -136,14 +150,16 @@ public class AlbumsController : Controller
 
         if (album.Id == 0)
         {
-            return NotFound("Album not found");
+            TempData["danger"] = "Album wasn't found";
+            return RedirectToAction(nameof(Index));
         }
 
         Artist artist = await _artistsRepository.GetArtistByIdAsync(album.ArtistId);
 
         if (artist.Id == 0)
         {
-            return NotFound("Artist not found for this album");
+            TempData["danger"] = "Artist not found";
+            return RedirectToAction(nameof(Index));
         }
 
         AlbumDTO data = new AlbumDTO
@@ -157,21 +173,23 @@ public class AlbumsController : Controller
         return View(data);
     }
 
-    [HttpPost]
+    [HttpPost] 
     public async Task<IActionResult> AddAlbumAction(AlbumRequest request)
     {
         Artist artist = await _artistsRepository.GetArtistByNameAsync(request.Artist.ToLower());
 
         if (artist.Id == 0)
         {
-            return BadRequest("Artist not found");
+            TempData["danger"] = "Artist not found";
+            return RedirectToAction(nameof(AddAlbum));
         }
 
         (Album album, IEnumerable<string> errors) = Album.Create(0, artist.Id, request.Title, request.ImageUrl);
 
         if (errors.Any())
         {
-            return BadRequest(errors);
+            TempData["danger"] = "Invalid request";
+            return RedirectToAction(nameof(AddAlbum));
         }
 
         int result = await _albumsRepository.AddAlbumAsync(album);
@@ -180,7 +198,7 @@ public class AlbumsController : Controller
         {
             TempData["danger"] = "Album wasn't added";
             _logger.LogError($"Album wasn't added {request.Title}");
-            return RedirectToAction("Index");
+            return RedirectToAction(nameof(AddAlbum));
         }
     
         TempData["success"] = "Album was added";

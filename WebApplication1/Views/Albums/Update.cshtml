@@ -6,7 +6,10 @@
     Layout = "_Layout";
 }
 
+
 <h1 class="text-center">Update Album</h1>
+
+@await Html.PartialAsync("_AlertPartialView")
 
 <form method="post" asp-controller="Albums" asp-action="UpdateAction">
     <input type="hidden" asp-for="Id" />

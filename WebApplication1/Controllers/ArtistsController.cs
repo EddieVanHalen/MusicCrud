@@ -42,7 +42,7 @@ public class ArtistsController : Controller
         {
             TempData["danger"] = "Artist wasn't added";
             _logger.LogError($"Artist wasn't added {artistRequest.Name}");
-            return RedirectToAction(nameof(Index));
+            return RedirectToAction(nameof(AddArtist));
         }
         
         TempData["success"] = "Artist was added successfully";
@@ -58,7 +58,7 @@ public class ArtistsController : Controller
         if (errors.Any())
         {
             TempData["danger"] = string.Join("; ", errors);
-            return BadRequest(errors);
+            return RedirectToAction(nameof(Update));
         }
 
         int result = await _artistRepository.UpdateArtistAsync(artist);
@@ -67,7 +67,7 @@ public class ArtistsController : Controller
         {
             TempData["danger"] = "Artist wasn't updated";
             _logger.LogError($"Artist wasn't updated {artist.Name}");
-            return RedirectToAction(nameof(Index));
+            return RedirectToAction(nameof(Update));
         }
         
         TempData["success"] = "Artist was updated successfully";
@@ -82,7 +82,8 @@ public class ArtistsController : Controller
 
         if (artist.Id == 0)
         {
-            return NotFound("Artist was not found");
+            TempData["danger"] = "Artist wasn't found";
+            return RedirectToAction(nameof(Index));
         }
         
         return View(artist);
@@ -111,7 +112,8 @@ public class ArtistsController : Controller
 
         if (artist.Id == 0)
         {
-            return NotFound("Artist wasn't found");
+            TempData["danger"] = "Artist wasn't found";
+            return RedirectToAction(nameof(Index));
         }
 
         return View(artist);
@@ -124,7 +126,8 @@ public class ArtistsController : Controller
 
         if (artist.Id == 0)
         {
-            return NotFound("Artist wasn't found");
+            TempData["danger"] = "Artist wasn't found";
+            return RedirectToAction(nameof(Index));
         }
 
         return View(artist);
